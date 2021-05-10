@@ -70,6 +70,7 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
                 try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playAndRecord, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
                 #else
                 try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: AVAudioSessionCategoryOptions.defaultToSpeaker)
+                
                 #endif
                 try AVAudioSession.sharedInstance().setActive(true)
                 audioRecorder = try AVAudioRecorder(url: URL(string: mPath)!, settings: settings)
@@ -123,6 +124,13 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
 
                 audioRecorder.stop()
                 audioRecorder = nil
+                do{
+                    try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: AVAudioSessionCategoryOptions.allowBluetooth)
+                    //try AVAudioSession.sharedInstance().setActive(false)
+                }catch{
+                    print("fail")
+                    result(FlutterError(code: "", message: "Failed to init", details: error))
+                }
                 result(recordingResult)
             }
         case "pause":
